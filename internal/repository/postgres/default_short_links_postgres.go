@@ -16,11 +16,11 @@ func NewDefaultShortLinksPostgres(db *sqlx.DB) *DefaultShortLinksPostgres {
 	return &DefaultShortLinksPostgres{db: db}
 }
 
-func (r *DefaultShortLinksPostgres) SetDefaultShortLinks(defaultLink model.Link, shortLink model.Link) error {
+func (r *DefaultShortLinksPostgres) SetDefaultShortLinks(defaultLinkId int, shortLinkId int) error {
 	var id int
 
 	query := fmt.Sprintf("INSERT INTO %s (default_link_id, short_link_id) values ($1, $2) RETURNING id", defaultShortLinksTable)
-	row := r.db.QueryRow(query, defaultLink.Id, shortLink.Id)
+	row := r.db.QueryRow(query, defaultLinkId, shortLinkId)
 
 	if err := row.Scan(&id); err != nil {
 		return err
@@ -29,28 +29,28 @@ func (r *DefaultShortLinksPostgres) SetDefaultShortLinks(defaultLink model.Link,
 	return nil
 }
 
-func (r *DefaultShortLinksPostgres) GetShortLinkByDefaultLink(defaultLink model.Link) (string, error) {
-	var shortLink model.Link
-	defaultLinkId, err := r.defaultLinkRepo.GetDefaultLinkId(defaultLink)
-	if err != nil {
-		return "", err
-	}
-
-	query := fmt.Sprintf("SELECT * FROM %s WHERE default_link_id=$1", defaultShortLinksTable)
-	err = r.db.Get(&shortLink, query, defaultLinkId)
-
-	return shortLink.LinkData, err
-}
-
-func (r *DefaultShortLinksPostgres) GetDefaultLinkByShortLink(shortLink model.Link) (string, error) {
-	var defaultLink model.Link
-	shortLinkId, err := r.shortLinkRepo.GetShortLinkId(shortLink)
-	if err != nil {
-		return "", err
-	}
+func (r *DefaultShortLinksPostgres) GetDefaultShortLinksByShortLinkId(shortLinkId int) (model.DefaultShortLinks, error) {
+	var defaultShortLinks model.DefaultShortLinks
 
 	query := fmt.Sprintf("SELECT * FROM %s WHERE short_link_id=$1", defaultShortLinksTable)
-	err = r.db.Get(&shortLink, query, shortLinkId)
+	row := r.db.QueryRow(query, shortLinkId)
 
-	return defaultLink.LinkData, err
+	if err := row.Scan(&defaultShortLinks); err != nil {
+		return model.DefaultShortLinks{}, err
+	}
+
+	return defaultShortLinks, nil
+}
+
+func (r *DefaultShortLinksPostgres) GetDefaultShortLinksByDefaultLinkId(defaultLinkId int) (model.DefaultShortLinks, error) {
+	var defaultShortLinks model.DefaultShortLinks
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE default_link_id=$1", defaultShortLinksTable)
+	row := r.db.QueryRow(query, defaultLinkId)
+
+	if err := row.Scan(&defaultShortLinks); err != nil {
+		return model.DefaultShortLinks{}, err
+	}
+
+	return defaultShortLinks, nil
 }

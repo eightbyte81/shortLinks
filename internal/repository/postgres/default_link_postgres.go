@@ -27,10 +27,10 @@ func (r *DefaultLinkPostgres) SetDefaultLink(link model.Link) (int, error) {
 	return id, nil
 }
 
-func (r *DefaultLinkPostgres) GetDefaultLinkId(link model.Link) (int, error) {
+func (r *DefaultLinkPostgres) GetDefaultLinkById(id int) (model.Link, error) {
 	var defaultLink model.Link
-	query := fmt.Sprintf("SELECT * FROM %s WHERE link=$1", defaultLinkTable)
-	err := r.db.Get(&defaultLink, query, link.LinkData)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", defaultLinkTable)
+	err := r.db.Get(&defaultLink, query, id)
 
-	return defaultLink.Id, err
+	return defaultLink, err
 }

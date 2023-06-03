@@ -21,16 +21,13 @@ func (s *DefaultLinkService) SetDefaultLink(link model.Link) (int, error) {
 		return -1, err
 	}
 
-	generatedShortLink, err := s.shortLinkService.GenerateShortLink(link)
-	if err != nil {
-		return -1, err
-	}
-	shortLinkId, err := s.shortLinkService.SetShortLink(generatedShortLink)
+	generatedShortLink := s.shortLinkService.GenerateShortLink(link.LinkData)
+	shortLinkId, err := s.shortLinkService.SetShortLink(model.Link{LinkData: generatedShortLink})
 	if err != nil {
 		return -1, err
 	}
 
-	err = s.defaultShortLinksService.SetDefaultShortLinks(model.Link{Id: defaultLinkId}, model.Link{Id: shortLinkId})
+	err = s.defaultShortLinksService.SetDefaultShortLinks(defaultLinkId, shortLinkId)
 	if err != nil {
 		return -1, err
 	}
@@ -38,6 +35,6 @@ func (s *DefaultLinkService) SetDefaultLink(link model.Link) (int, error) {
 	return defaultLinkId, nil
 }
 
-func (s *DefaultLinkService) GetDefaultLinkId(link model.Link) (int, error) {
-	return s.repo.GetDefaultLinkId(link)
+func (s *DefaultLinkService) GetDefaultLinkById(id int) (model.Link, error) {
+	return s.repo.GetDefaultLinkById(id)
 }

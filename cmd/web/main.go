@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
@@ -25,6 +26,9 @@ func main() {
 		log.Fatal("Failed to load env variables: ", err)
 	}
 
+	storageFlag := flag.String("storage", "postgres", "Select storage: postgres (by default) or cache")
+	flag.Parse()
+
 	db, err := postgres.NewPostgresDB(postgres.Config{
 		Host:     viper.GetString("db.host"),
 		Port:     viper.GetString("db.port"),
@@ -43,8 +47,15 @@ func main() {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.Home)
-	mux.HandleFunc("/api/get-short-link", handlers.GetShortLink)
-	mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLink)
+	if *storageFlag == "postgres" {
+		mux.HandleFunc("/api/get-short-link", handlers.GetShortLink)
+		mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLink)
+	} else if *storageFlag == "cache" {
+		mux.HandleFunc("/api/get-short-link", handlers.GetShortLinkFromCache)
+		mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLinkFromCache)
+	} else {
+		log.Fatal("Failed to initialize handlers: storage is not specified")
+	}
 
 	log.Print("Starting server on :8080")
 	err = http.ListenAndServe(":8080", mux)

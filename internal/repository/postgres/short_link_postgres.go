@@ -27,10 +27,20 @@ func (r *ShortLinkPostgres) SetShortLink(link model.Link) (int, error) {
 	return id, nil
 }
 
-func (r *ShortLinkPostgres) GetShortLinkId(link model.Link) (int, error) {
+func (r *ShortLinkPostgres) GetShortLinkById(id int) (model.Link, error) {
 	var shortLink model.Link
-	query := fmt.Sprintf("SELECT * FROM %s WHERE link=$1", shortLinkTable)
-	err := r.db.Get(&shortLink, query, link.LinkData)
 
-	return shortLink.Id, err
+	query := fmt.Sprintf("SELECT * FROM %s WHERE id=$1", shortLinkTable)
+	err := r.db.Get(&shortLink, query, id)
+
+	return shortLink, err
+}
+
+func (r *ShortLinkPostgres) GetShortLinkByLinkData(linkData string) (model.Link, error) {
+	var shortLink model.Link
+
+	query := fmt.Sprintf("SELECT * FROM %s WHERE link=$1", shortLinkTable)
+	err := r.db.Get(&shortLink, query, linkData)
+
+	return shortLink, err
 }

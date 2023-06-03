@@ -13,14 +13,14 @@ func NewDefaultShortLinksService(repo repository.DefaultShortLinks) *DefaultShor
 	return &DefaultShortLinksService{repo: repo}
 }
 
-func (s *DefaultShortLinksService) SetDefaultShortLinks(defaultLink model.Link, shortLink model.Link) error {
-	return s.repo.SetDefaultShortLinks(defaultLink, shortLink)
+func (s *DefaultShortLinksService) SetDefaultShortLinks(defaultLinkId int, shortLinkId int) error {
+	return s.repo.SetDefaultShortLinks(defaultLinkId, shortLinkId)
 }
 
-func (s *DefaultShortLinksService) GetShortLinkByDefaultLink(defaultLink model.Link) (string, error) {
-	return s.repo.GetShortLinkByDefaultLink(defaultLink)
+func (s *DefaultShortLinksService) GetDefaultShortLinksByShortLinkId(shortLinkId int) (model.DefaultShortLinks, error) {
+	return s.repo.GetDefaultShortLinksByShortLinkId(shortLinkId)
 }
 
-func (s *DefaultShortLinksService) GetDefaultLinkByShortLink(shortLink model.Link) (string, error) {
-	return s.repo.GetDefaultLinkByShortLink(shortLink)
+func (s *DefaultShortLinksService) GetDefaultShortLinksByDefaultLinkId(defaultLinkId int) (model.DefaultShortLinks, error) {
+	return s.repo.GetDefaultShortLinksByDefaultLinkId(defaultLinkId)
 }
