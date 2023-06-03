@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang='en'>
+    <head>
+        <meta charset='utf-8'>
+        <title>Home - ShortLinks</title>
+    </head>
+    <body>
+        <main>
+            <div>
+                <h2>Введите обычную ссылку</h2>
+                <label>
+                    <input id="default-link-input" placeholder="Обычная ссылка" />
+                </label>
+                <input id="short-link-btn" value="Получить сокращенную ссылку" onclick="getShortLink()" type="button">
+                <br />
+                <span style="visibility: hidden" id="short-link-span"></span>
+            </div>
+            <div>
+                <h2>Введите сокращенную ссылку</h2>
+                <label>
+                    <input id="short-link-input" placeholder="Сокращенная ссылка" />
+                </label>
+                <input id="default-link-btn" value="Получить обычную ссылку" onclick="getDefaultLink()" type="button">
+                <br />
+                <span style="visibility: hidden" id="default-link-span"></span>
+            </div>
+        </main>
+        <script>
+            async function fetchAsync(url, method, body) {
+                let response = await fetch(url, {
+                    method: method,
+                    body: method !== "GET" ? body : null
+                })
+                if (response.ok) {
+                    return await response.text()
+                } else {
+                    return "Ошибка: " + response.status
+                }
+            }
+
+            async function getShortLink() {
+                const defaultLinkInput = document.getElementById("default-link-input")
+                const shortLinkSpan = document.getElementById("short-link-span")
+                shortLinkSpan.style.visibility = 'visible'
+                shortLinkSpan.textContent = await fetchAsync("http://localhost:8080/api/get-short-link", "POST", defaultLinkInput.value)
+                defaultLinkInput.value = ''
+            }
+            async function getDefaultLink() {
+                const shortLinkInput = document.getElementById("short-link-input")
+                const defaultLinkSpan = document.getElementById("default-link-span")
+                defaultLinkSpan.style.visibility = 'visible'
+                defaultLinkSpan.textContent = await fetchAsync('http://localhost:8080/api/get-default-link?sl=' + shortLinkInput.value, "GET")
+                shortLinkInput.value = ''
+            }
+        </script>
+    </body>
+</html>

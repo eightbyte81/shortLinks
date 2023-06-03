@@ -1,0 +1,23 @@
+services:
+  postgres:
+    container_name: postgres
+    image: postgres
+    environment:
+      POSTGRES_USER: me
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: short_link_db
+      PGDATA: /data/postgres
+    volumes:
+      - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - short-links-app
+    restart: unless-stopped
+
+networks:
+  short-links-app:
+    driver: bridge
+
+volumes:
+  postgres:
