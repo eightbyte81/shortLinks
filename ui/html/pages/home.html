@@ -2,27 +2,34 @@
 <html lang='en'>
     <head>
         <meta charset='utf-8'>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="/static/css/main.css">
         <title>Home - ShortLinks</title>
     </head>
     <body>
         <main>
             <div>
                 <h2>Введите обычную ссылку</h2>
-                <label>
-                    <input id="default-link-input" placeholder="Обычная ссылка" />
-                </label>
-                <input id="short-link-btn" value="Получить сокращенную ссылку" onclick="getShortLink()" type="button">
-                <br />
-                <span style="visibility: hidden" id="short-link-span"></span>
+                <div class="form-input">
+                    <input placeholder="Обычная ссылка" id="default-link-input">
+                    <label for="default-link-input">Обычная ссылка</label>
+                </div>
+                <button class="mui-btn" onclick="getShortLink()">Получить сокращенную ссылку</button>
+                <div class="result-label">Результат:</div>
+                <span class="result-span short-link-span"></span>
             </div>
             <div>
                 <h2>Введите сокращенную ссылку</h2>
-                <label>
-                    <input id="short-link-input" placeholder="Сокращенная ссылка" />
-                </label>
-                <input id="default-link-btn" value="Получить обычную ссылку" onclick="getDefaultLink()" type="button">
-                <br />
-                <span style="visibility: hidden" id="default-link-span"></span>
+                <div class="form-input">
+                    <input placeholder="Сокращенная ссылка" id="short-link-input">
+                    <label for="short-link-input">Сокращенная ссылка</label>
+                </div>
+                <button class="mui-btn" onclick="getDefaultLink()">Получить обычную ссылку</button>
+                <div class="result-label">Результат:</div>
+                <span class="result-span default-link-span"></span>
             </div>
         </main>
         <script>
@@ -39,16 +46,14 @@
             }
 
             async function getShortLink() {
-                const defaultLinkInput = document.getElementById("default-link-input")
-                const shortLinkSpan = document.getElementById("short-link-span")
-                shortLinkSpan.style.visibility = 'visible'
+                const defaultLinkInput = document.querySelector("#default-link-input")
+                const shortLinkSpan = document.querySelector(".short-link-span")
                 shortLinkSpan.textContent = await fetchAsync("http://localhost:8080/api/get-short-link", "POST", defaultLinkInput.value)
                 defaultLinkInput.value = ''
             }
             async function getDefaultLink() {
-                const shortLinkInput = document.getElementById("short-link-input")
-                const defaultLinkSpan = document.getElementById("default-link-span")
-                defaultLinkSpan.style.visibility = 'visible'
+                const shortLinkInput = document.querySelector("#short-link-input")
+                const defaultLinkSpan = document.querySelector(".default-link-span")
                 defaultLinkSpan.textContent = await fetchAsync('http://localhost:8080/api/get-default-link?sl=' + shortLinkInput.value, "GET")
                 shortLinkInput.value = ''
             }

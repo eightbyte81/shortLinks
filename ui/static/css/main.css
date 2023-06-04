@@ -1,0 +1,110 @@
+* {
+    font-family:
+            'Roboto',
+            'Helvetica Neue',
+            'Arial',
+            'sans-serif'
+}
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    width: 750px;
+}
+.mui-btn {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: uppercase;
+    color: #FFF;
+    background-color: #2196F3;
+    transition: all .15s ease-in-out;
+    display: inline-block;
+    height: 36px;
+    padding: 0 26px;
+    margin-top: 6px;
+    margin-bottom: 13px;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    touch-action: manipulation;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle;
+    white-space: nowrap;
+    user-select: none;
+    font-size: 14px;
+    letter-spacing: .03em;
+    position: relative;
+    overflow: hidden;
+}
+.mui-btn:active,.mui-btn:hover {
+    outline: 0;
+    text-decoration: none;
+    background-color: #39a1f4;
+    color: #FFF;
+}
+.mui-btn:hover {
+    box-shadow: 0 0 2px rgba(0,0,0,.12), 0 4px 4px rgba(0,0,0,.2)
+}
+.mui-btn:active {
+    background-color: #5aaef3;
+    box-shadow: 0 10px 20px rgba(0,0,0,.19), 0 6px 6px rgba(0,0,0,.23)
+}
+.form-input {
+    position: relative;
+}
+.form-input input::placeholder {
+    opacity: 0;
+}
+.form-input input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    height: 38px;
+    outline: none;
+    border-radius: 5px;
+    border: 1px solid gray;
+}
+.form-input label {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(191 191 191);
+    letter-spacing: 1px;
+    transition: .3s;
+    user-select: none;
+    cursor: text;
+}
+.form-input input:focus + label,
+.form-input input:not(:placeholder-shown) + label
+{
+    top: 0;
+    font-size: .8rem;
+    color: rgb(11, 111, 193);
+    background: #fff;
+    padding: 7px;
+}
+.form-input input:focus {
+    height: 38px;
+    border: 2px solid rgb(11, 111, 193);
+}
+.result-span {
+    display: block;
+    width: 100%;
+    margin-top: 3px;
+    min-height: 20px;
+    height: fit-content;
+    word-wrap: break-word;
+    border-bottom: 1px solid black;
+}
+.result-label {
+    font-weight: bold;
+}

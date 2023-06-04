@@ -41,12 +41,14 @@ func main() {
 		log.Fatal("Failed to initialize db: ", err)
 	}
 
+	staticFileServer := http.FileServer(http.Dir("./ui/static"))
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
 	handlers := NewHandler(services)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.Home)
+	mux.Handle("/static/", http.StripPrefix("/static", staticFileServer))
 	if *storageFlag == "postgres" {
 		mux.HandleFunc("/api/get-short-link", handlers.GetShortLink)
 		mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLink)
@@ -57,21 +59,26 @@ func main() {
 		log.Fatal("Failed to initialize handlers: storage is not specified")
 	}
 
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
+	go func() {
+		err = db.Close()
+		if err != nil {
+			log.Fatal("Failed to close db connection: ", err)
+		}
+
+		signalType := <-quit
+		signal.Stop(quit)
+		log.Print("Shutdown server...")
+		log.Print("Signal type: ", signalType)
+
+		os.Exit(0)
+	}()
+
 	log.Print("Starting server on :8080")
-	err = http.ListenAndServe(":8080", mux)
+	err = http.ListenAndServe("localhost:8080", mux)
 	if err != nil {
 		log.Fatal(err)
-	}
-
-	quit := make(chan os.Signal, 1)
-	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT)
-	<-quit
-
-	log.Print("Shutdown server...")
-
-	err = db.Close()
-	if err != nil {
-		log.Fatal("Failed to close db connection: ", err)
 	}
 }
 
