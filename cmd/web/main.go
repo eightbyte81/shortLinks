@@ -48,12 +48,15 @@ func main() {
 	handlers := handler.NewHandler(services)
 
 	mux := http.NewServeMux()
-	mux.HandleFunc("/", handlers.Home)
+	mux.HandleFunc("/home", handlers.Home)
 	mux.Handle("/static/", http.StripPrefix("/static", staticFileServer))
 	if *storageFlag == "postgres" {
+		log.Print("Remember to apply migrations with Makefile scripts")
+		mux.HandleFunc("/", handlers.HandleShortUrlRedirect)
 		mux.HandleFunc("/api/get-short-link", handlers.GetShortLink)
 		mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLink)
 	} else if *storageFlag == "cache" {
+		mux.HandleFunc("/", handlers.HandleShortUrlRedirectWithCache)
 		mux.HandleFunc("/api/get-short-link", handlers.GetShortLinkFromCache)
 		mux.HandleFunc("/api/get-default-link", handlers.GetDefaultLinkFromCache)
 	} else {
