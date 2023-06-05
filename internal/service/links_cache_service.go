@@ -1,22 +1,25 @@
 package service
 
-import "shortLinks/internal/repository"
+import (
+	"shortLinks/internal/model"
+	"shortLinks/internal/repository"
+)
 
 type LinksCacheService struct {
-	repo             repository.LinksCache
-	shortLinkService *ShortLinkService
+	repo         repository.LinksCache
+	linksService LinksService
 }
 
 func NewLinksCacheService(repo repository.LinksCache) *LinksCacheService {
 	return &LinksCacheService{repo: repo}
 }
 
-func (s *LinksCacheService) SetLinksInCache(defaultLink string) (string, error) {
-	shortLink := s.shortLinkService.GenerateShortLink(defaultLink)
+func (s *LinksCacheService) SetLinksInCache(defaultLink model.Link) (string, error) {
+	shortLink := s.linksService.GenerateShortLink(defaultLink)
 
-	s.repo.SetLinksInCache(shortLink, defaultLink)
+	s.repo.SetLinksInCache(shortLink.LinkData, defaultLink.LinkData)
 
-	return shortLink, nil
+	return shortLink.LinkData, nil
 }
 
 func (s *LinksCacheService) GetDefaultLinkFromCacheByShortLink(shortLink string) (string, error) {

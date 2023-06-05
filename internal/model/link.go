@@ -1,6 +1,6 @@
 package model
 
 type Link struct {
-	Id       int    `db:"id"`
-	LinkData string `db:"link"`
+	Id       int    `gorm:"primaryKey;column:id"`
+	LinkData string `gorm:"column:link"`
 }

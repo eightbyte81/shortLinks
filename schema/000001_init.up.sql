@@ -14,14 +14,14 @@ CREATE TABLE "short_link" (
     OIDS=FALSE
 );
 
-CREATE TABLE "default_short_links" (
+CREATE TABLE "link_chain" (
     "id" serial NOT NULL,
     "default_link_id" serial NOT NULL,
     "short_link_id" serial NOT NULL,
-    CONSTRAINT "default_short_links_pk" PRIMARY KEY ("id")
+    CONSTRAINT "link_chain_pk" PRIMARY KEY ("id")
 ) WITH (
     OIDS=FALSE
 );
 
-ALTER TABLE "default_short_links" ADD CONSTRAINT "default_short_links_fk0" FOREIGN KEY ("default_link_id") REFERENCES "default_link"("id");
-ALTER TABLE "default_short_links" ADD CONSTRAINT "default_short_links_fk1" FOREIGN KEY ("short_link_id") REFERENCES "short_link"("id");
+ALTER TABLE "link_chain" ADD CONSTRAINT "link_chain_fk0" FOREIGN KEY ("default_link_id") REFERENCES "default_link"("id");
+ALTER TABLE "link_chain" ADD CONSTRAINT "link_chain_fk1" FOREIGN KEY ("short_link_id") REFERENCES "short_link"("id");

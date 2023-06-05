@@ -66,17 +66,7 @@ func (h *Handler) GetShortLink(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", 500)
 	}
 
-	defaultLinkId, err := h.services.SetDefaultLink(model.Link{LinkData: string(body)})
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-	}
-	defaultShortLinks, err := h.services.GetDefaultShortLinksByDefaultLinkId(defaultLinkId)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-	}
-	shortLink, err := h.services.GetShortLinkById(defaultShortLinks.ShortLinkId)
+	shortLink, err := h.services.GetShortLinkByDefaultLink(model.Link{LinkData: string(body)})
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
@@ -96,17 +86,7 @@ func (h *Handler) GetDefaultLink(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	shortLink, err := h.services.GetShortLinkByLinkData(r.URL.Query().Get("sl"))
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-	}
-	defaultShortLinks, err := h.services.GetDefaultShortLinksByShortLinkId(shortLink.Id)
-	if err != nil {
-		log.Print(err.Error())
-		http.Error(w, "Internal Server Error", 500)
-	}
-	defaultLink, err := h.services.GetDefaultLinkById(defaultShortLinks.DefaultLinkId)
+	defaultLink, err := h.services.GetDefaultLinkByShortLinkData(r.URL.Query().Get("sl"))
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)
@@ -139,7 +119,7 @@ func (h *Handler) GetShortLinkFromCache(w http.ResponseWriter, r *http.Request) 
 		http.Error(w, "Internal Server Error", 500)
 	}
 
-	shortLink, err := h.services.SetLinksInCache(string(body))
+	shortLink, err := h.services.SetLinksInCache(model.Link{LinkData: string(body)})
 	if err != nil {
 		log.Print(err.Error())
 		http.Error(w, "Internal Server Error", 500)

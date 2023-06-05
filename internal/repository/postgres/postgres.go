@@ -2,13 +2,14 @@ package postgres
 
 import (
 	"fmt"
-	"github.com/jmoiron/sqlx"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/postgres"
 )
 
 const (
-	defaultLinkTable       = "default_link"
-	shortLinkTable         = "short_link"
-	defaultShortLinksTable = "default_short_links"
+	defaultLinkTable = "default_link"
+	shortLinkTable   = "short_link"
+	linkChainTable   = "link_chain"
 )
 
 type Config struct {
@@ -20,17 +21,12 @@ type Config struct {
 	SSLMode  string
 }
 
-func NewPostgresDB(cfg Config) (*sqlx.DB, error) {
-	db, err := sqlx.Open(
+func NewPostgresDB(cfg Config) (*gorm.DB, error) {
+	db, err := gorm.Open(
 		"postgres",
 		fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=%s",
 			cfg.Host, cfg.Port, cfg.Username, cfg.DBName, cfg.Password, cfg.SSLMode))
 
-	if err != nil {
-		return nil, err
-	}
-
-	err = db.Ping()
 	if err != nil {
 		return nil, err
 	}

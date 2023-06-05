@@ -62,11 +62,6 @@ func main() {
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGTERM, syscall.SIGINT, os.Interrupt)
 	go func() {
-		err = db.Close()
-		if err != nil {
-			log.Fatal("Failed to close db connection: ", err)
-		}
-
 		signalType := <-quit
 		signal.Stop(quit)
 		log.Print("Shutdown server...")

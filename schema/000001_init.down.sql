@@ -1,5 +1,5 @@
-DROP TABLE "default_link";
+DROP TABLE if exists "default_link" cascade;
 
-DROP TABLE "short_link";
+DROP TABLE if exists "short_link" cascade;
 
-DROP TABLE "default_short_links";
+DROP TABLE if exists "link_chain" cascade;

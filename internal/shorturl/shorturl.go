@@ -37,5 +37,5 @@ func (s *ShortUrl) Generate(link string) string {
 	generatedNumber := new(big.Int).SetBytes(urlHashBytes).Bytes()
 	finalString := s.Base64Encoded(generatedNumber)
 
-	return finalString[:10]
+	return "localhost:8080/" + finalString[:10]
 }
