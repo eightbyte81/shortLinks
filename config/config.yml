@@ -1,7 +1,7 @@
 port: "8080"
 
 db:
-  host: "localhost"
+  host: "host.docker.internal"
   port: "5432"
   username: "me"
   dbname: "short_link_db"

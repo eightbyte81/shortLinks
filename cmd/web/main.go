@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"shortLinks/cmd/web/handler"
 	"shortLinks/internal/repository"
 	"shortLinks/internal/repository/postgres"
 	"shortLinks/internal/service"
@@ -44,7 +45,7 @@ func main() {
 	staticFileServer := http.FileServer(http.Dir("./ui/static"))
 	repos := repository.NewRepository(db)
 	services := service.NewService(repos)
-	handlers := NewHandler(services)
+	handlers := handler.NewHandler(services)
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", handlers.Home)
@@ -71,7 +72,7 @@ func main() {
 	}()
 
 	log.Print("Starting server on :8080")
-	err = http.ListenAndServe("localhost:8080", mux)
+	err = http.ListenAndServe("0.0.0.0:8080", mux)
 	if err != nil {
 		log.Fatal(err)
 	}

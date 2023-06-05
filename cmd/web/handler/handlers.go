@@ -1,4 +1,4 @@
-package main
+package handler
 
 import (
 	"html/template"
@@ -9,7 +9,7 @@ import (
 	"shortLinks/internal/service"
 )
 
-type HandlerFunc interface {
+type Handlers interface {
 	Home(w http.ResponseWriter, r *http.Request)
 	GetShortLink(w http.ResponseWriter, r *http.Request)
 	GetDefaultLink(w http.ResponseWriter, r *http.Request)
@@ -18,7 +18,7 @@ type HandlerFunc interface {
 }
 
 type Handler struct {
-	HandlerFunc
+	Handlers
 	services *service.Service
 }
 

@@ -2,9 +2,10 @@ services:
   postgres:
     container_name: postgres
     image: postgres
+    env_file: .env
     environment:
       POSTGRES_USER: me
-      POSTGRES_PASSWORD: password
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: short_link_db
       PGDATA: /data/postgres
     volumes:
@@ -14,6 +15,24 @@ services:
     networks:
       - short-links-app
     restart: unless-stopped
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    container_name: short-links-app
+    build:
+      dockerfile: Dockerfile
+      context: .
+    env_file: .env
+    ports:
+      - 8080:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 
 networks:
   short-links-app:
